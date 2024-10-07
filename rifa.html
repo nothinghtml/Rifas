@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rifa de $6000</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@300;400&display=swap');
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Lato', sans-serif;
             background-color: #e0f7df;
             text-align: center;
             color: #333;
@@ -22,13 +24,17 @@
         }
         h1 {
             color: #ff5722;
-            font-size: 40px;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 50px;
             margin-bottom: 40px;
         }
-        p {
-            font-size: 20px;
-            color: #444;
+        .info {
+            background-color: #f8f8f8;
+            border: 2px solid #4caf50;
+            padding: 20px;
             margin-bottom: 20px;
+            border-radius: 10px;
+            font-family: 'Lato', sans-serif;
         }
         .grid {
             display: grid;
@@ -89,13 +95,20 @@
         button:hover {
             background-color: #2e7d32;
         }
+        #total {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>¡Gran Rifa de $6000!</h1>
-        <p>Compra tu boleto por solo $30. La rifa se hará una vez que se vendan todos los números.</p>
-        <p>¡No te quedes fuera! Aprovecha esta oportunidad segura y aumenta tus posibilidades de ganar.</p>
+        <div class="info">
+            <p>Compra tu boleto por solo $15. La rifa se hará una vez que se vendan todos los números.</p>
+            <p>¡No te quedes fuera! Aprovecha esta oportunidad segura y aumenta tus posibilidades de ganar.</p>
+        </div>
 
         <div class="grid" id="numberGrid"></div>
 
@@ -105,16 +118,20 @@
             <input type="tel" id="telefono" placeholder="Número de teléfono" required>
             <button type="submit">Apartar números</button>
         </form>
+
+        <div id="total"></div>
     </div>
 
     <script>
         const grid = document.getElementById('numberGrid');
         const form = document.getElementById('infoForm');
+        const totalElement = document.getElementById('total');
         let selectedNumbers = [];
         let confirmedNumbers = [];
+        const precioBoleto = 15; // Precio del boleto
 
         // Crear los botones de los números
-        for (let i = 1; i <= 200; i++) {
+        for (let i = 1; i <= 500; i++) {
             const numberDiv = document.createElement('div');
             numberDiv.classList.add('number');
             numberDiv.innerText = i;
@@ -137,6 +154,12 @@
             }
 
             form.style.display = selectedNumbers.length > 0 ? 'block' : 'none';
+            mostrarTotal();
+        }
+
+        function mostrarTotal() {
+            const total = selectedNumbers.length * precioBoleto;
+            totalElement.innerText = Monto total a pagar: $${total};
         }
 
         form.onsubmit = (e) => {
@@ -145,7 +168,8 @@
             const telefono = document.getElementById('telefono').value;
 
             if (nombre && telefono && selectedNumbers.length > 0) {
-                const confirmacion = confirm(¿Estás seguro de que deseas apartar los números ${selectedNumbers.join(", ")}?);
+                const total = selectedNumbers.length * precioBoleto; // Calcular el total nuevamente
+                const confirmacion = confirm(¿Estás seguro de que deseas apartar los números ${selectedNumbers.join(", ")} por un total de $${total}?);
                 if (confirmacion) {
                     confirmedNumbers = confirmedNumbers.concat(selectedNumbers);
                     selectedNumbers.forEach(number => {
@@ -154,12 +178,13 @@
                         selectedElement.classList.add('confirmed');
                     });
 
-                    const mensaje = Hola, he seleccionado los números ${selectedNumbers.join(", ")} para la rifa. Mis datos son: ${nombre}, Tel: ${telefono};
+                    const mensaje = Hola, he seleccionado los números ${selectedNumbers.join(", ")} para la rifa. Mis datos son: ${nombre}, Tel: ${telefono}. Total a pagar: $${total};
                     const url = https://wa.me/9371190828?text=${encodeURIComponent(mensaje)};
                     window.location.href = url;
 
                     selectedNumbers = []; // Reiniciar la selección después de confirmar
                     form.style.display = 'none';
+                    mostrarTotal(); // Actualizar el total
                 }
             }
         }
